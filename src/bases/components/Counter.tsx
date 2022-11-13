@@ -1,7 +1,11 @@
 /** @format */
 import { FC, useState } from 'react';
 
-export const Counter: FC<{ initialValue: number }> = ({ initialValue = 0 }) => {
+interface Props {
+	initialValue?: number; // ? para hacerlo opcional.
+}
+
+export const Counter: FC<Props> = ({ initialValue = 0 }) => {
 	// Desestructuración de las props.
 	const [counter, setCounter] = useState(initialValue);
 
