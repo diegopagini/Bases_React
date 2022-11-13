@@ -1,8 +1,5 @@
 /** @format */
-import { Counter } from './bases/components/Counter';
-import { CounterBy } from './bases/components/CounterBy';
-import { CounterEffect } from './bases/components/CounterEffect';
-import { CounterHook } from './bases/components/CounterHook';
+import { Counter, CounterBy, CounterEffect, CounterHook, CounterReducerComponent } from './bases/components';
 
 function App() {
 	return (
@@ -11,6 +8,7 @@ function App() {
 			<CounterBy />
 			<CounterEffect />
 			<CounterHook />
+			<CounterReducerComponent />
 		</>
 	);
 }
