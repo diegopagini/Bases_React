@@ -24,7 +24,7 @@ export const CounterBy: FC<Props> = ({ initialValue = 0 }) => {
 	 * Función para aumentar el valor del counter.
 	 */
 	const handleClick = (value: number) => {
-		setCounterState((prev) => ({ counter: prev.counter + value, clicks: prev.clicks++ }));
+		setCounterState(({ clicks, counter }) => ({ counter: counter + value, clicks: clicks++ }));
 		// Siempre se debe retornar un nuevo estado.
 	};
 
