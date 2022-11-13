@@ -5,9 +5,15 @@ interface Props {
 	initialValue?: number; // ? para hacerlo opcional.
 }
 
+// Interfaz para el useState
+interface CounterState {
+	counter: number;
+	clicks: number;
+}
+
 export const CounterBy: FC<Props> = ({ initialValue = 0 }) => {
 	// Desestructuración de las props.
-	const [counterState, setCounterState] = useState({
+	const [counterState, setCounterState] = useState<CounterState>({
 		counter: initialValue,
 		clicks: 0,
 	}); // useState puede aceptar objetos para mantener el estado.
