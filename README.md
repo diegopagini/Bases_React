@@ -1,46 +1,102 @@
-# Getting Started with Create React App
+# React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Input && Output
 
-## Available Scripts
 
-In the project directory, you can run:
+### child
 
-### `npm start`
+```tsx
+import { FC } from 'react';
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+import { Issue } from '../interfaces';
+import { State } from '../interfaces/issue.interface';
+import { IssueItem } from './IssueItem';
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+interface Props {
+	// Like @Inputs in Angular
+	issues: Issue[];
+	state?: State;
+	// Like @Outputs in Angular
+	onStateChanged: (state?: State) => void;
+}
 
-### `npm test`
+export const IssueList: FC<Props> = ({ issues, state, onStateChanged }) => {
+	return (
+		<div className='card border-white'>
+			<div className='card-header bg-dark'>
+				<ul className='nav nav-pills card-header-pills'>
+					<li className='nav-item'>
+						<a className={`nav-link ${!state ? 'active' : ''}`} onClick={() => onStateChanged()}>
+							All
+						</a>
+					</li>
+					<li className='nav-item'>
+						<a
+							className={`nav-link ${state === State.Open ? 'active' : ''}`}
+							onClick={() => onStateChanged(State.Open)}>
+							Open
+						</a>
+					</li>
+					<li className='nav-item'>
+						<a
+							className={`nav-link ${state === State.Closed ? 'active' : ''}`}
+							onClick={() => onStateChanged(State.Closed)}>
+							Closed
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div className='card-body text-dark'>
+				{issues.map((issue) => (
+					<IssueItem key={issue.id} issue={issue} />
+				))}
+			</div>
+		</div>
+	);
+};
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
 
-### `npm run build`
+### parent
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```tsx
+import { useState } from 'react';
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+import { LoadingIcon } from '../../shared/components/LoadingIcon';
+import { IssueList, LabelPicker } from '../components';
+import { useIssues } from '../hooks';
+import { State } from '../interfaces';
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+export const ListView = () => {
+	const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+	const [state, setState] = useState<State>();
+	const { issuesQuery } = useIssues();
 
-### `npm run eject`
+	const onLabelChanged = (label: string) => {
+		selectedLabels.includes(label)
+			? setSelectedLabels(selectedLabels.filter((lbs: string) => lbs !== label))
+			: setSelectedLabels([...selectedLabels, label]);
+	};
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+	return (
+		<div className='row mt-5'>
+			<div className='col-8'>
+				{issuesQuery.isLoading ? (
+					<LoadingIcon />
+				) : (
+					<IssueList
+						issues={issuesQuery.data || []}
+						state={state}
+						onStateChanged={(newState?: State) => setState(newState)}
+					/>
+				)}
+			</div>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+			<div className='col-4'>
+				<LabelPicker selectedLabels={selectedLabels} onChange={(label) => onLabelChanged(label)} />
+			</div>
+		</div>
+	);
+};
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
