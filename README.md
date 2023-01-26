@@ -1,6 +1,6 @@
 # React
 
-## Input &
+## Input 
 
 
 ### child
